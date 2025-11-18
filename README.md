@@ -6,7 +6,8 @@
   docker compose up -d
   ```
   Postgres listens on `localhost:5434` with `podcast/podcast`; pgAdmin on `http://localhost:8080` (admin/admin). Elasticsearch on `http://localhost:9200`, Kibana at `http://localhost:5601`, Grafana at `http://localhost:3000` (admin/admin).
-- API keys and secrets are managed via `.direnv` (e.g., `.env` files loaded by direnv); ensure your environment files are present before sending requests to a LLM.
+- uv is used to manage Python packages and environments (`pyproject.toml`/`uv.lock` tracked in-repo).
+- API keys are managed via `.direnv` (e.g., `.env` files loaded by direnv); ensure your environment files are present before sending requests to a LLM.
 
 ## Ingestion
 - Transcription pipeline: fetch RSS (`fetch_rss_feed`), build the download queue (`make_queue`), download audio (`download_media_file`), transcribe mp3s (`transcribe_audio_file`), and write transcripts to Postgres (`ingest`). Use `--limit` to cap how many new episodes run per invocation.
