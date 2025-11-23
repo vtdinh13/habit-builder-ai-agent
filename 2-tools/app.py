@@ -119,7 +119,7 @@ def stream_agent_response(
 
 
 st.set_page_config(page_title="Podcast Agent", page_icon="🧠", layout="wide")
-st.title(" 🧠 Huberman Lab Agent")
+st.title(" 🧠 Podcast Agent")
 st.markdown(
     "A conversational interface grounded in podcast episodes from the Huberman Lab, powered by `gpt-4o-mini` and PydanticAI. It ingests episodes via RSS, transcribes audio with Faster-Whisper, generates embeddings with Sentence Transformers, and indexes chunks in Elasticsearch. Over 350 episodes were indexed, ranging from December 21, 2021, to November 17, 2025."
 )
@@ -155,7 +155,7 @@ with st.sidebar:
         "**Disclaimer:**")
     st.markdown("1. This project is actively evolving. Please help by engaging with the agent, as your questions will directly improve their responses."
     )
-    st.markdown("2. This application is an independent creation and is neither endorsed by nor affiliated with the Huberman Lab podcast.")
+    st.markdown("2. This application is an independent creation and is neither endorsed by nor affiliated with the Huberman Lab podcast. *For educational purposes only.*")
     st.markdown("")
     st.markdown(
     "⭐️ **Support the project**: [Star or fork the repository on GitHub](https://github.com/vtdinh13/huberman-agent)."
