@@ -119,9 +119,9 @@ def stream_agent_response(
 
 
 st.set_page_config(page_title="Huberman Lab Agent", page_icon="🧠", layout="wide")
-st.title(" Huberman Lab Agent")
+st.title(" 🧠 Huberman Lab Agent")
 st.markdown(
-    "Huberman Lab Agent is a conversational interface for the Huberman Lab podcast powered by `gpt-4o-mini` and PydanticAI. It ingests episodes via RSS, transcribes audio with Faster-Whisper, generates embeddings with Sentence Transformers, and indexes chunks in Elasticsearch. Over 350 episodes were indexed, ranging from December 21, 2021, to November 17, 2025."
+    "A conversational interface for the Huberman Lab podcast powered by `gpt-4o-mini` and PydanticAI. It ingests episodes via RSS, transcribes audio with Faster-Whisper, generates embeddings with Sentence Transformers, and indexes chunks in Elasticsearch. Over 350 episodes were indexed, ranging from December 21, 2021, to November 17, 2025."
 )
 st.markdown(
     "The agent embeds user queries, retrieves relevant segments from the vector index, and streams time-stamped responses. All interactions are logged via Logfire."
@@ -134,7 +134,7 @@ st.markdown(
 with st.sidebar:
     st.markdown("")
     st.markdown("")
-    # st.header("Keep the Agent Sharp")
+    st.header("Configuration")
     st.caption(
         "Life happens, even to agents. Try reloading then ask another question. "
        
@@ -150,16 +150,12 @@ with st.sidebar:
     st.markdown("")
     st.markdown("")
     st.markdown("")
-    st.markdown("")
-    st.markdown("")
-    st.markdown("")
-    st.markdown("")
-    st.markdown("")
 
     st.markdown(
-        "**Disclaimer:** This project is actively evolving. Please help by engaging with the agent, as your questions will directly improve their responses."
+        "**Disclaimer:**")
+    st.markdown("1. This project is actively evolving. Please help by engaging with the agent, as your questions will directly improve their responses."
     )
-    st.markdown("")
+    st.markdown("2. This application is an independent creation and is neither endorsed by nor affiliated with the Huberman Lab podcast.")
     st.markdown("")
     st.markdown(
     "⭐️ **Support the project**: [Star or fork the repository on GitHub](https://github.com/vtdinh13/huberman-agent)."
