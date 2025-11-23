@@ -5,6 +5,8 @@ from sentence_transformers import SentenceTransformer
 from threading import Lock
 from typing import Callable, List, NamedTuple, Optional
 
+import os
+
 
 class SearchTools:
     """
@@ -18,23 +20,43 @@ class SearchTools:
         num_candidates: Default minimum number of candidates to evaluate in the kNN query.
     """
 
-    db_url = "http://localhost:9200"
+    # db_url = "http://localhost:9200"
+    API_KEY = os.getenv("ELASTICSEARCH")
+    endpoint = os.getenv("ES_ENDPOINT")
+
     embedding_model = "all-MPNet-base-v2"
     num_results = 15
     num_candidates = 1000
     index_name = "huberman"
 
-    def __init__( self, index_name: Optional[str] = None, embedding_model_name: Optional[str] = None, 
-                 db_url: Optional[str] = None, num_results: Optional[int] = None, 
-                 num_candidates: Optional[int] = None):
+    def __init__(
+        self,
+        index_name: Optional[str] = None,
+        embedding_model_name: Optional[str] = None,
+        db_url: Optional[str] = None,
+        num_results: Optional[int] = None,
+        num_candidates: Optional[int] = None,
+    ):
+        api_key = self.API_KEY
+        endpoint = db_url or self.endpoint
 
+        if not endpoint:
+            raise ValueError("Elasticsearch endpoint is not configured; set ES_ENDPOINT or pass db_url.")
+        if not api_key:
+            raise ValueError("Elasticsearch API key missing; set ELASTICSEARCH env var.")
+
+        self.api_key = api_key
+        self.endpoint = endpoint
         self.index_name = index_name or self.index_name
-        self.db_url = db_url or self.db_url
         self.num_results = num_results or self.num_results
         self.num_candidates = num_candidates or self.num_candidates
         model_name = embedding_model_name or self.embedding_model
 
-        self.db = Elasticsearch(self.db_url)
+        self.db = Elasticsearch(
+            self.endpoint,
+            api_key=self.api_key,
+            request_timeout=120,
+        )
         self.embedding_model = SentenceTransformer(model_name)
         self._embed_lock = Lock()
         

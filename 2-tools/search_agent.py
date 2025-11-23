@@ -23,7 +23,7 @@ TOOLS YOU CAN USE
 - vector_search() - Fetch relevant chunks
 
 RULES
-- Use ALL queries, both the user's and the ones you rewrote, to call the vector search tool between 2 to 4 times. STOP AT FOUR.
+- Use ALL queries, both the user's and the ones you rewrote, to call the vector search tool 2 to 4 times. STOP AT FOUR, but it could be less.
 - Use only information returned from the vector search tool; never invent facts. EXPLICITLY state that you are giving general guidance if information you provided was not derived from the search tool.
 - Always provide the paraphrased question, numbered sections, and reference for each statement you make.
 - Write your answer clearly and accurately.
@@ -37,7 +37,6 @@ CONTEXT:
 """.strip()
 
 class Reference(BaseModel):
-    title: str
     episode_name: str
     start_time: str
     end_time:str
@@ -51,7 +50,7 @@ class Section(BaseModel):
         lines = []
         for idx, ref in enumerate(self.references, start=1):
             lines.append(
-                f"{idx}. {ref.title}, {ref.episode_name}, ({ref.start_time}, {ref.end_time})"
+                f"{idx}. {ref.episode_name} ({ref.start_time}-{ref.end_time})"
             )
         return lines
 
@@ -90,3 +89,23 @@ def create_search_agent(model:str) -> Agent:
     )
 
     return search_agent
+
+class NamedCallback:
+
+    def __init__(self, agent):
+        self.agent_name = agent.name
+
+    async def print_function_calls(self, ctx, event):
+        # Detect nested streams
+        if hasattr(event, "__aiter__"):
+            async for sub in event:
+                await self.print_function_calls(ctx, sub)
+            return
+
+        if isinstance(event, FunctionToolCallEvent):
+            tool_name = event.part.tool_name
+            args = event.part.args
+            print(f"TOOL CALL ({self.agent_name}): {tool_name}({args})")
+
+    async def __call__(self, ctx, event):
+        return await self.print_function_calls(ctx, event)
