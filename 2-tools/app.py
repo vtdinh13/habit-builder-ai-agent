@@ -244,9 +244,10 @@ if user_question:
                 answer_placeholder.markdown(answer_md)
                 logfire.log(
                     "streamlit_agent_response",
+                    values={
                     user_question=user_question,
                     answer=answer_md,
-                    tool_activity=list(tool_lines),
+                    tool_activity=list(tool_lines)},
                 )
                 st.session_state["chat_history"].append(
                     {
