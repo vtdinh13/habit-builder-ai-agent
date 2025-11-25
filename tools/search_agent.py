@@ -9,7 +9,8 @@ from pydantic_ai.messages import FunctionToolCallEvent
 
 from dataclasses import dataclass 
 
-from tools.search_tools import prepare_search_tools
+# from tools.search_tools import prepare_search_tools
+from search_tools import prepare_search_tools
 
 search_instructions = """
 You are an assistant that specializes in finding relevant passages from the Huberman Lab podcast archive (topics include but not limited to sleep, motivation, neuroscience, fitness, general health). Compile and embed all queries and do one vector search with all keywords.
@@ -28,9 +29,9 @@ TOOLS YOU CAN USE
 RULES
 - Call vector search ONE time.
 - Use only information returned from the vector search tool; never invent facts. EXPLICITLY state that you are giving general guidance if information you provided was not derived from the search tool.
-- Always provide the paraphrased question, numbered sections, and reference for each statement you make.
+- For each response, rewrite the user's question clearly and ensure that you are answering the question that you rewrote.
 - Write your answer clearly and accurately.
-- Always include references for each section.
+
 
 CONTEXT:
 ---
@@ -60,7 +61,6 @@ class Section(BaseModel):
 class SearchResultResponse(BaseModel):
     rephrased_question: str
     sections: list[Section]
-    references: list[Reference]
 
     def format_response(self) -> str:
         output = "### Your Question\n\n"

@@ -18,12 +18,12 @@ DEFAULT_MODEL = "openai:gpt-4o-mini"
 
 
 @st.cache_resource(show_spinner=False)
-def load_agent(model_name: str):
+def load_agent():
     """
     Build and cache the search agent so the sentence transformer/ES client are reused
     across Streamlit reruns.
     """
-    agent = create_search_agent(model=model_name)
+    agent = create_search_agent()
     return agent
 
 
@@ -35,6 +35,7 @@ class StreamlitSearchResultHandler(JSONParserHandler):
         self.placeholder = placeholder
         self.buffer: list[str] = []
         self.rendered_text: str = ""
+        self.section_reference_counters: dict[str, int] = {}
 
     def _render(self) -> None:
         text = "".join(self.buffer).strip()
@@ -43,26 +44,38 @@ class StreamlitSearchResultHandler(JSONParserHandler):
         self.placeholder.markdown(text)
         self.rendered_text = text
 
+    def _section_key(self, path: str) -> str | None:
+        if "sections" not in path:
+            return None
+        return path
+
     def on_field_start(self, path: str, field_name: str) -> None:
+        if field_name == "rephrased_question":
+            self.buffer.append("### Your Question\n\n")
+            self._render()
+            return
+
         if field_name == "references" and "sections" not in path:
             return
         if field_name == "references":
-            header_level = path.count("/") + 1
-            self.buffer.append(f"\n\n{'#' * header_level} References\n")
+            section_key = self._section_key(path)
+            if section_key:
+                self.section_reference_counters[section_key] = 0
+            self.buffer.append("\n\n#### References\n")
             self._render()
 
     def on_field_end(
         self, path: str, field_name: str, value: str, parsed_value: Any = None
     ) -> None:
         if field_name == "heading":
-            self.buffer.append(f"\n\n## {value}\n\n")
+            self.buffer.append(f"\n\n### {value}\n\n")
             self._render()
         elif field_name == "content":
             self.buffer.append("\n")
             self._render()
 
     def on_value_chunk(self, path: str, field_name: str, chunk: str) -> None:
-        if field_name == "content":
+        if field_name in {"content", "rephrased_question"}:
             self.buffer.append(chunk)
             self._render()
 
@@ -72,9 +85,14 @@ class StreamlitSearchResultHandler(JSONParserHandler):
         if field_name == "references" and "sections" not in path:
             return
         if field_name == "references" and item:
+            section_key = self._section_key(path)
+            if not section_key:
+                return
+            index = self.section_reference_counters.get(section_key, 0) + 1
+            self.section_reference_counters[section_key] = index
             episode = item.get("episode_name", "")
             window = f"{item.get('start_time', '')}-{item.get('end_time', '')}"
-            line = f"- {episode} ({window})\n"
+            line = f" {index}. {episode} ({window})\n"
             self.buffer.append(line)
             self._render()
 
@@ -183,11 +201,11 @@ for exchange in st.session_state["chat_history"]:
 
 user_question = st.chat_input("Ask about sleep, fitness, motivation, neuroscience, general health, etc.")
 
-model_name = 'openai:gpt-4o-mini'
+
 if user_question:
     with st.chat_message("user"):
         st.markdown(user_question)
-    agent = load_agent(model_name)
+    agent = load_agent()
 
     with st.chat_message("assistant"):
         tool_container = st.container()
@@ -243,6 +261,7 @@ if user_question:
             else:
                 answer_placeholder.markdown(answer_md)
                 logfire.log(
+                    "info",
                     "streamlit_agent_response",
                     {
                         "user_question": user_question,
