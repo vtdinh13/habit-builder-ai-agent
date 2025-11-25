@@ -3,7 +3,7 @@ name = "huberman-agent"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11.14"
+requires-python = ">=3.11"
 dependencies = [
     "elasticsearch>=9.2.0",
     "faster-whisper>=1.2.1",
