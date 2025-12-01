@@ -70,7 +70,7 @@ class SearchTools:
         with self._embed_lock:
             return self.embedding_model.encode(query, convert_to_numpy=True)
 
-    def vector_search(self, index_name: Optional[str] = None, query: str = "", 
+    def search_embeddings(self, index_name: Optional[str] = None, query: str = "", 
                       num_results: Optional[int] = None, 
                       num_candidates: Optional[int] = None) -> List[dict[str, str]]:
         """
@@ -141,7 +141,7 @@ def prepare_search_tools() -> PreparedSearchTools:
         num_results: Optional[int] = None,
         num_candidates: Optional[int] = None,
     ) -> List[dict[str, str]]:
-        return search_client.vector_search(
+        return search_client.search_embeddings(
             index_name=index_name,
             query=query,
             num_results=num_results,

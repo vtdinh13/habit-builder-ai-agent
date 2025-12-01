@@ -2,38 +2,13 @@ import requests
 import os
 import random
 from typing import Optional, List
-import random 
+from .utils import preferred_sites
 
 
-preferred_sites = [
-    "brainfacts",
-    "nimh",
-    "nih",
-    "alleninstitute",
-    "mit",
-    "stanford",
-    "acsm",
-    "nsca",
-    "acefitness",
-    "exerciseismedicine",
-    "bjsm",
-    "apa",
-    "motivationscience",
-    "berkeley",
-    "mayoclinic",
-    "clevelandclinic",
-    "harvard",
-    "hopkinsmedicine",
-    "cdc",
-    "mpg",
-    "yale",
-    "scientificamerican",
-    "psychologytoday",
-    "nature",
-    "science",
-]
+MAX_WEB_RESULTS = 3
 
-def web_search(query: str, preferred_sites: List[str]):
+
+def search_web(query: str):
     """
     Query Brave Search and keep only results that match trusted domains.
 
@@ -42,7 +17,7 @@ def web_search(query: str, preferred_sites: List[str]):
         preferred_sites: Domain substrings used to filter the Brave results
 
     Returns:
-        Up to five filtered URLs, or None if the Brave request fails.
+        Up to three filtered URLs, or None if the Brave request fails.
     """
 
     url = f"https://api.search.brave.com/res/v1/web/search?q={query}"
@@ -57,8 +32,8 @@ def web_search(query: str, preferred_sites: List[str]):
         urls_all = [item.get("url") for item in results if item.get("url")]  
         urls_filtered = [u for u in urls_all if any(dom in u for dom in preferred_sites)]
 
-        if len(urls_filtered) > 5:
-            urls_filtered = random.sample(urls_filtered, 5)
+        if len(urls_filtered) > MAX_WEB_RESULTS:
+            urls_filtered = random.sample(urls_filtered, MAX_WEB_RESULTS)
         return urls_filtered
 
     except (requests.exceptions.RequestException, UnicodeDecodeError) as e:
