@@ -344,7 +344,7 @@ with st.sidebar:
     st.caption("Keep your workspace clean by clearing the current conversation.")
     clear_chat = st.button("Clear Conversation")
 
-    st.caption("Agent going wild? Stop the agent.")
+    st.caption("Agent making endless searches? Stop the agent.")
     if st.button("Stop loading", type="primary"):
         st.warning("Stopping response...")
         st.stop()
