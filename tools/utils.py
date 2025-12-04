@@ -54,4 +54,3 @@ preferred_sites = [
     "nature",
     "science",
 ]
-

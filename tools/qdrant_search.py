@@ -11,12 +11,9 @@ class QdrantSearchClient:
 
     def __init__(
         self,
-        url: Optional[str] = None,
         host: Optional[str] = None,
         port: Optional[int] = None,
-        api_key: Optional[str] = None,
         use_cloud: Optional[bool] = None,
-        cloud_url: Optional[str] = None,
         cloud_api_key: Optional[str] = None,
         prefer_grpc: bool = False,
     ):
@@ -27,23 +24,30 @@ class QdrantSearchClient:
         self._embed_lock = Lock()
 
         # Decide whether to use a cloud deployment vs the local docker container.
-        env_flag = os.getenv("QDRANT_USE_CLOUD")
-        if use_cloud is None:
-            if env_flag is not None:
-                use_cloud = env_flag.lower() == "true"
-            else:
-                use_cloud = bool(url or os.getenv("QDRANT_ENDPOINT"))
 
-        provided_api_key = api_key or os.getenv("QDRANT_API_KEY")
-        resolved_cloud_url = cloud_url or url or os.getenv("QDRANT_ENDPOINT")
+        provided_api_key = os.getenv("QDRANT_API_KEY")
+        resolved_cloud_url = os.getenv("QDRANT_ENDPOINT")
         resolved_cloud_key = cloud_api_key or provided_api_key
-        self.mode = "cloud" if use_cloud else "local"
 
-        if self.mode == "cloud":
-            self.client = QdrantClient(url=resolved_cloud_url, api_key=resolved_cloud_key, prefer_grpc=prefer_grpc)
+        cloud_requested = bool(use_cloud)
+        cloud_available = bool(resolved_cloud_url and resolved_cloud_key)
+
+        if cloud_requested and not cloud_available:
+            raise ValueError(
+                "Cloud Qdrant requested but QDRANT_ENDPOINT and QDRANT_API_KEY are missing."
+            )
+
+        if cloud_requested or (not cloud_requested and cloud_available):
+            self.mode = "cloud"
+            self.client = QdrantClient(
+                url=resolved_cloud_url,
+                api_key=resolved_cloud_key,
+                prefer_grpc=prefer_grpc,
+            )
         else:
-            host = "127.0.0.1"
-            port = "6333"
+            self.mode = "local"
+            host = host or "127.0.0.1"
+            port = port or 6333
             self.client = QdrantClient(
                 host=host,
                 port=port,

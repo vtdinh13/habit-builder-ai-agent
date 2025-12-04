@@ -5,9 +5,6 @@ from typing import Optional, List
 from .utils import preferred_sites
 
 
-MAX_WEB_RESULTS = 3
-
-
 def search_web(query: str):
     """
     Query Brave Search and keep only results that match trusted domains.
@@ -32,8 +29,8 @@ def search_web(query: str):
         urls_all = [item.get("url") for item in results if item.get("url")]  
         urls_filtered = [u for u in urls_all if any(dom in u for dom in preferred_sites)]
 
-        if len(urls_filtered) > MAX_WEB_RESULTS:
-            urls_filtered = random.sample(urls_filtered, MAX_WEB_RESULTS)
+        if len(urls_filtered) > 3:
+            urls_filtered = random.sample(urls_filtered, 3)
         return urls_filtered
 
     except (requests.exceptions.RequestException, UnicodeDecodeError) as e:
