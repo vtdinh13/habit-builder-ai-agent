@@ -1,12 +1,12 @@
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 from pydantic_ai import Agent
 
 from tools.websearch_tools import get_page_content, search_web
 from tools.utils import AgentConfig
 from tools.qdrant_search import QdrantSearchClient
 
-from typing import Optional, List
+from typing import Any, Optional, List
 
 instructions = """
 You are a specialized research assistant. Your job is to help users dissect on topics including but not limited to sleep, motivation, neuroscience, fitness, performance, and general health. 
@@ -40,7 +40,8 @@ REFERENCE RULES
 - divided into 2 different formats depending on whether you searched vector store or web
     - vector store 
         1. ALWAYS INCLUDE episode name, start and end times.
-        2. ALWAYS INCLUDE name of podcast participants or title of podcast in inline citations
+        2. ALWAYS INCLUDE name of podcast participants or title of podcast in inline citations.
+        3. NEVER cite generically as "Huberman Lab"; always use the specific episode title from the metadata (e.g., "How to Improve Brain Health...").
     - web
         1. NEVER SEARCH on the huberman website with urls that start with "https://www.hubermanlab.com"; look in the vector store insead.
         2. Include website names when author names are missing in "References".
@@ -49,7 +50,7 @@ REFERENCE RULES
 RULES
 - DO NOT MAKE THE search_embeddings call together with websearch. These are separate searches! 
 - Avoid using 'The user'. 
-- NEVER INVOKE MORE THAN 3 search_embeddings call at once.
+- DO NOT CALL get_page_content before web_search. 
 - ADHERE TO REFERENCE RULES.
 - Do not provide your reponses as a list, but rather synthesized, accurate, and concise paragraphs.
 - YOU MUST PROVIDE LINKS TO ALL WEB PAGES IN YOUR RESPONSE IN THE REFERENCE SECTION. 
@@ -70,28 +71,64 @@ CONTEXT:
 class Reference(BaseModel):
     title: Optional[str] = None
     episode_name: Optional[str] = None
-    url: str
-    start_time: str
-    end_time: str
+    url: Optional[str] = None
+    start: Optional[str] = None
+    end: Optional[str] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
 
     def format_citations(self) -> str:
         if self.episode_name:
-            return f"{self.episode_name} ({self.start_time}-{self.end_time})"
+            start = self.start or self.start_time or ""
+            end = self.end or self.end_time or ""
+            window = " - ".join([t for t in (start, end) if t])
+            return f"{self.episode_name} ({window})" if window else self.episode_name
         if self.url:
             title = self.title or "Unknown Title"
-            url = self.url
-            return f" *{title}* {url}"
+            return f" *{title}* {self.url}"
 
 
 class Section(BaseModel):
     heading: str
     content: str
-    references: List[Reference]
+    references: List[Reference] = Field(default_factory=list)
 
 
 class SearchResultResponse(BaseModel):
     description: str
     sections: List[Section]
+    references: List[Reference] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_sections(cls, data: Any) -> Any:
+        if isinstance(data, dict) and isinstance(data.get("sections"), list):
+            normalized: List[Any] = []
+            for section in data["sections"]:
+                if isinstance(section, dict):
+                    normalized.append(section)
+                elif isinstance(section, str):
+                    normalized.append(
+                        {
+                            "heading": "Analysis",
+                            "content": section,
+                            "references": [],
+                        }
+                    )
+                else:
+                    normalized.append(section)
+            data["sections"] = normalized
+        return data
+
+    def model_post_init(self, __context: Any) -> None:  # type: ignore[override]
+        if not self.references:
+            return
+        sections_without_refs = [section for section in self.sections if not section.references]
+        if not sections_without_refs:
+            return
+        for idx, reference in enumerate(self.references):
+            target_section = sections_without_refs[idx % len(sections_without_refs)]
+            target_section.references.append(reference)
 
     def format_response(self) -> str:
         output = "### Description\n\n"
