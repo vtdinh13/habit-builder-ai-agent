@@ -97,8 +97,8 @@ The diagram below outlines the development flow and supporting services.
     - with uv: `uv run researchv1.py`
     - with pip: `python researchv1.py`
 2. You can also run the agent locally on Streamlit. This option includes streaming parsing and continuing conversation. Run the following command on CLI:
-    - with uv: `uv run streamlit run research_app.py` 
-    - with pip: `python streamlit run research_app.py`
+    - with uv: `uv run streamlit run qdrant_app.py` 
+    - with pip: `python streamlit run qdrant_app.py`
 
 ## Test and Evaluation
 
