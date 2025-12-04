@@ -27,7 +27,7 @@ The diagram below outlines the development flow and supporting services.
 1. `uv` manages Python packages and the virtual environment. To replicate the project you can use either `uv` or `pip`, but using `uv` will match this repository’s workflow most closely.
 
     *Option 1*: Manage with uv  
-      - Install `uv` if it is not already on your system. See the [Astral documentation](https://docs.astral.sh/uv/getting-started/installation/) for installation steps.  
+      - Install `uv` if it is not already on your system. See [Astral documentation](https://docs.astral.sh/uv/getting-started/installation/) for installation steps.  
       - Run `uv sync` to install all required packages.
       
     *Option 2*: Manage with pip  
@@ -58,11 +58,11 @@ The diagram below outlines the development flow and supporting services.
 
 ## Ingestion
 
-0. Downloading and transcribing transcripts is a project on its own. This repository ships with a Parquet file of transcripts. See [Ingestion](ingestion/README.md) if you'd like to replicate the end-to-end download and transcription flow yourself.
+0. Downloading and transcribing transcripts is a project on its own. A Parquet file of transcripts is provided to avoid this step. See [Ingestion](ingestion/README.md) if you'd like to replicate the end-to-end download and transcription flow yourself.
 
 1. Make sure Docker Desktop is running.
 
-2. Two vector database options are available: Elasticsearch and Qdrant. The `docker-compose` file supports both. You can run both simultaneously, but picking the database that best fits your workflow and removing the other keeps resource usage light. Start every service in detached mode with `docker-compose up -d` or start just the service you selected.
+2. Two vector database options are available: Elasticsearch and Qdrant. The `docker-compose` file supports both. This project initially used Elasticsearch but decided to go with Qdrant for the final deployment. You can run both simultaneously, but picking one database is best to keep usage light. Start every service in detached mode with `docker-compose up -d` or start just the service you selected.
 
 3. If you choose Elasticsearch, start both the Elasticsearch and Kibana services.
     ```
