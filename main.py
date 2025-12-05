@@ -1,11 +1,10 @@
-from research_qdrant import create_research_agent
+from habit_agent import create_research_agent
 from tools.utils import NamedCallback
 import asyncio
 
 
-async def main(user_prompt:str):
-
-    # user_prompt = "What is the association between coffee and alzheimer's?"
+async def main():
+    user_prompt = "What is the association between coffee and alzheimer's?"
     agent = create_research_agent()
     agent_callback = NamedCallback(agent)
 
