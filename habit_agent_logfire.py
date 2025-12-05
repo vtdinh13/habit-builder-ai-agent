@@ -1,4 +1,4 @@
-from research_qdrant import create_research_agent
+from habit_agent import create_research_agent
 from tools.utils import NamedCallback
 import asyncio
 
