@@ -18,7 +18,7 @@ Testing and evaluation combine vibe checks, unit tests (pytest), and a LLM judge
 
 The diagram below outlines the development flow and supporting services.
 
-<img src='diagrams/podcast-research-agent-system.png'>
+<img src='diagrams/workflow.png'>
 
 
 ## Setup
@@ -96,15 +96,24 @@ The diagram below outlines the development flow and supporting services.
 
 ## Agent
 1. Test if the vector database and agent works. Note that the Qdrant service has to be running via Docker and that this option is limited -- you can only ask one question at a time and you cannot ask follow up questions. Run the following command on CLI: 
-    - with uv: `uv run habit_agent.py`
-    - with pip: `python habit_agent.py`
+    - with uv: `uv run main.py`
+    - with pip: `python main.py`
 2. You can also run the agent locally on Streamlit. This option includes streaming parsing and continuing conversation. Run the following command on CLI:
     - with uv: `uv run streamlit run qdrant_app.py` 
     - with pip: `python streamlit run qdrant_app.py`
 3. Access to the local streamlit app: http://localhost:8505/.
 4. There's a streamlit cloud version. You can [interact with the agent](https://habit-builder-ai-agent.streamlit.app/) without having to replicate the repo.
 ## Test and Evaluation
+*Option 1: Run tests on CLI*
+1. To run all files with the prefix test_*, run on CLI: `make test`. The following should be displayed:
+    <img src=diagrams/test_pytest.png>
 
+*Option 2: Run tests in Visual Stuido code*
+1. On the left side banner of Visual Studio, click on the testing icon: 
+2. Select the the testing folder. There are three triangles pointing to the right. Select the first triangle to run your test. 
+  <image src=diagrams/test_vscode.png>
+
+  
 ## Logging and Monitoring
 1. User interactions are logged with Pydantic Logfire. You have to [make an account](https://logfire.pydantic.dev/) to use it. 
 2. Create a new project. 
