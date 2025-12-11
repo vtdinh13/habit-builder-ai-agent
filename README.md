@@ -148,14 +148,27 @@ The diagram below outlines the development flow and supporting services.
 4. There's also a streamlit cloud version. You can [interact with the agent](https://habit-builder-ai-agent.streamlit.app/) without having to replicate the repo.
 
 ## Test
-*Option 1: Run tests on CLI*
-1. To run all files with the prefix test_*, run on CLI: `make test`. A version of the following should be displayed:
-    <img src=diagrams/test_pytest.png>
+1. Install all development dependencies:
+    ```bash
+    uv sync --group dev
+    ```
+2. Choose between Option 1 or 2. Option 1 runs tests via Makefile on CLI. Option 2 runs tests via VS code.
 
-*Option 2: Run tests in Visual Stuido code*
-1. On the left side banner of Visual Studio, click on the testing icon: 
-2. Select the testing folder. There are three triangles pointing to the right. Select the first triangle to run your test. 
-  <image src=diagrams/test_vscode.png>
+    *Option 1: Run tests on CLI*
+    - To run all files with the prefix test_*:
+      ```bash 
+      make test 
+      ```
+
+    - A version of the following will display:
+        <img src=diagrams/test_pytest.png>
+
+    *Option 2: Run tests in VS code*
+    -  There are three triangles pointing to the right. Select the first triangle to run your test. 
+    
+      <image src=diagrams/vscode_test.png>
+
+<u>**Note**</u>: Tests could fail if the entire knowledge base is not upserted to Qdrant.
 
 
 ## Evaluation
