@@ -80,7 +80,7 @@ The diagram below outlines the development flow and supporting services.
     ```
   
 
-3. The speed of chunking and embedding text upserting into Qdrant depends on your processor. Adjust the parquet and embedding batch size according to the capability of your machine. The default is set at 128. Chunking and uploading embeddings to the local Qdrant vector database takes ~2 hours.
+3. The speed of chunking and embedding text and upserting into Qdrant depends on your processor. Adjust the parquet and embedding batch size according to the capability of your machine. The default is set at 128. Chunking and uploading embeddings to the local Qdrant vector database takes ~2 hours.
 
     ```bash
     uv run python ingestion/ingest_qdrant.py \
@@ -165,25 +165,26 @@ The diagram below outlines the development flow and supporting services.
 
     *Option 2: Run tests in VS code*
     -  There are three triangles pointing to the right. Select the first triangle to run your test. 
-    
+
       <image src=diagrams/vscode_test.png>
 
-<u>**Note**</u>: Tests could fail if the entire knowledge base is not upserted to Qdrant.
+<u>**Note**</u>: **Tests could fail if the entire knowledge base is not upserted to Qdrant.**
 
 
 ## Evaluation
-1. Running the LLM takes ~5 minutes. Run on CLI from the root directory: 
-    ```
-      uv run python -m evaluation.eval_orchestrator \
-      --csv evaluation/gt_sample.csv \
-      --agent-model gpt-4o-mini \
-      --judge-model gpt-5-nano \
-      --concurrency 2 
+1. Running evaluation takes ~5 minutes.
+
+    ```bash
+    uv run python -m evaluation.eval_orchestrator \
+    --csv evaluation/gt_sample.csv \
+    --agent-model gpt-4o-mini \
+    --judge-model gpt-5-nano \
+    --concurrency 2 
     ```
 
     You should get a version of the following:
       
-      <img src=diagrams/llm_judge_report.png>
+      <img src=diagrams/judge_report.png>
 
 
 
