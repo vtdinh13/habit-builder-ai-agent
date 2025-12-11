@@ -164,9 +164,10 @@ The diagram below outlines the development flow and supporting services.
         <img src=diagrams/test_pytest.png>
 
     *Option 2: Run tests in VS code*
-    -  There are three triangles pointing to the right. Select the first triangle to run your test. 
+    - Select *Testing* on the Activity bar, which can be found on the vertical bar on the left edge of VS Code. 
+    - Run tests by click on the triangle as shown below:
 
-      <image src=diagrams/vscode_test.png>
+        <image src=diagrams/vscode_test.png>
 
 <u>**Note**</u>: **Tests could fail if the entire knowledge base is not upserted to Qdrant.**
 
