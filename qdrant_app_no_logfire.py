@@ -316,7 +316,7 @@ TOKEN_CAP_RATIO = 0.9
 st.set_page_config(page_title="Habit Builder AI Agent", page_icon="🌱", layout="wide")
 st.title("🌱 Habit Builder AI Agent")
 # st.markdown("#### *Turning Research into Daily Action*")
-st.markdown("Building lasting habits is challenging especially when you don't understand the why behind them. The Habit Builder AI Agent uses programmatic and automated tools to help you turn complex information into simple habits that you can immediately implement, all supported by the latest research.")
+st.markdown("Building lasting habits is challenging especially when you don't understand the why behind them. The Habit Builder AI Agent uses tool calls to help you turn complex information into simple habits that you can immediately implement, all supported by the latest research.")
 st.markdown("Built with Faster Whisper for transcription, OpenAI GPT models as the engine, Pydantic/PydanticAI for structured agent logic, Qdrant for vector search, and Logfire for end-to-end observability. Curious about how I built this? [Check out my repo.](https://github.com/vtdinh13/habit-builder-ai-agent)")
 
 
