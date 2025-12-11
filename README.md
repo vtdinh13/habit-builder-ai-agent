@@ -10,7 +10,7 @@ Building lasting habits is challenging without understanding the *why* behind th
 
 This AI agent acts as a personalized coach that delivers relevant knowledge from the podcast's extensive archive, searches the web for current research, and with access to all of this knowledge, recommends actionable takeaways grounded in expert interviews and scientific evidence.
 
-Audio files are downloaded via RSS, transcribed with Faster Whisper, chunked with a sliding window, and embedded with Hugging Face's Sentence Transformer model `all-MPNet-base-v2`. Qdrant stores embeddings and Streamlit offers a nice interface to interact with the agent. You will be able to create the local Streamlit version if you replicate this project, or you can also visit the [Streamlit cloud version](https://habit-builder-ai-agent.streamlit.app/). Below is a demo:
+Audio files are downloaded via RSS, transcribed with Faster Whisper, chunked with a sliding window, and embedded with Hugging Face's Sentence Transformer model `all-MPNet-base-v2`. Qdrant stores embeddings and Streamlit offers a nice interface to interact with the agent. You will be able to create the local Streamlit version if you replicate this project, or you can also visit the [Streamlit cloud version](https://habit-builder-ai-agent.streamlit.app/), as shown below:
 
 <img src='diagrams/habit-builder-ai-agentv2--speed.gif'>
 
