@@ -69,7 +69,7 @@ The diagram below outlines the development flow and supporting services.
     The values to the API keys are now available in your current working environment. Exports only apply to this one session; you'd have to export it again if you need to revist this project.
 ## Ingestion
 
-0. Downloading and transcribing transcripts is a project on its own. A Parquet file containing transcripts is provided to avoid this step. See [Ingestion](ingestion/README.md) if you'd like to replicate the transcription process yourself.
+0. Downloading and transcribing audio files is a project on its own. A Parquet file containing transcripts is provided to avoid this step. See [Ingestion](ingestion/README.md) if you'd like to replicate the transcription process yourself.
 
 1. Make sure Docker Desktop is running.
   
